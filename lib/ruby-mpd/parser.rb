@@ -120,7 +120,22 @@ class MPD
 
     # Remove lines which we don't want.
     def filter_lines(string, filter)
-      string.lines.reject {|line| line =~ /(#{filter.join('|')}):/i}.join
+      s = []
+      skip = 0
+      string.lines.each do |line|
+        if line =~ /(#{filter.join('|')}):/i
+          skip = 2
+        end
+
+        if skip > 0
+          skip = skip - 1
+          next
+        else
+          s << line
+        end
+      end
+
+      s.join
     end
 
     # Make chunks from string.
